@@ -16,4 +16,5 @@ use Illuminate\Support\Facades\Auth;
 /** REGISTER  **/Route::get('/register', function () {return redirect('/');});
 /** DASHBOARD **/Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {Route::get('/dashboard', [HomeController::class, 'index'])->name('admin.home');});// ->group(function () {Route::get('/dashboard', function () {return view('dashboard');})->name('dashboard');});
 /** POSTS     **/Route::resource('/posts', PostController::class)->names('admin.posts');
+/** NOTIFICATIONS **/Route::get('/posts/notify', [PostController::class,'notification'])->name('admin.notifications.index');
  

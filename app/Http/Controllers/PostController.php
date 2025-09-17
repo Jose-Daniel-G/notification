@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PostEvent;
 use App\Models\Post;
 use App\Notifications\PostNotification;
 use Illuminate\Http\Request;
@@ -35,10 +36,11 @@ class PostController extends Controller
         
         $post = Post::create($data);
         // auth()->user()->notify(new PostNotification($post));
-        User::all()->except($post->user_id)
-                   ->each(function(User $user) use ($post){
-                        $user->notify(new PostNotification($post));
-                   });
+        // User::all()->except($post->user_id)
+        //            ->each(function(User $user) use ($post){
+        //                 $user->notify(new PostNotification($post));
+        //            });
+        event(new PostEvent($post));
         return redirect()->back()->with(['success'=>'Post created successfully']);
     }
 
@@ -70,6 +72,10 @@ class PostController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy(Post $post)
+    {
+        //
+    }
+    public function notification(Post $post)
     {
         //
     }
