@@ -23,14 +23,11 @@ class PostListener
      */
     public function handle(object $event): void
     {
-        // User::all()->except($post->user_id)
-        //            ->each(function(User $user) use ($post){
-        //                 $user->notify(new PostNotification($post));
-        //            });
-        User::all()->except($event->post->user_id)
-            ->each(function (User $user) use ($event) {
+        // User::all()->except($post->user_id)->each(function(User $user) use ($post){$user->notify(new PostNotification($post));});
+        User::whereKeyNot($event->post->user_id)
+            ->each(fn (User $user) => $user->notify(new PostNotification($event->post)));
 
-                Notification::send($user, new PostNotification($event->post));
-            });
+        // $clientes = User::role('cliente')->get(); // si usas spatie/laravel-permission
+        // Notification::send($clientes, new PostNotification($event->post));
     }
 }

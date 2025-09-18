@@ -52,7 +52,7 @@ class PostNotification extends Notification
         return [
             'post' => $this->post->id,
             'title' => $this->post->title,
-            'description' => $this->post->description,
+            'description' => $this->post->body,
             'time' => Carbon::now()->diffForHumans(),
         ];
     }

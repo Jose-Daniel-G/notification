@@ -3,13 +3,20 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Post;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     public function __construct() {  $this->middleware('auth'); }
 
-    public function index() { return view('admin.index'); }
+    public function index() { 
+       $posts = Post::with(['category', 'image'])
+                ->latest()
+                ->get();
+        return view('home', compact('posts'));
+        // return view('admin.index',compact('posts')); 
+    }
 
     public function store(Request $request) {}
 

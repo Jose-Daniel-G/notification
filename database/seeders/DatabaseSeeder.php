@@ -24,8 +24,9 @@ class DatabaseSeeder extends Seeder
         // Crear registros de PicoyPlaca antes de crear Vehiculos
         // PicoyPlaca::factory()->count(0)->create(); // Crea 5 registros de PicoyPlaca
         User::factory(9)->create();   
-        // $this->call(PostSeeder::class);
+        Tag::factory(8)->create();
+        $this->call(CategorySeeder::class);
+        $this->call(PostSeeder::class);
         // // Crear vehículos y vincularlos a profesores aleatorios
-        // Vehiculo::factory()->count(10)->create([   'usuario_id' => $profesores->random()->id, // Asigna un profesor aleatorio]);
     }
 }

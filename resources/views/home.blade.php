@@ -69,7 +69,7 @@
                         </ul>
                     </div>
                 </div>
-                @include('news.posts.show') <!-- Modal BUSCAR -->
+                @include('admin.posts.show') <!-- Modal BUSCAR -->
             @endforeach
         </div>
     </div>

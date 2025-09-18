@@ -34,5 +34,7 @@ class User extends Authenticatable // AQUI ESTA DESACTIVADO
     public function adminlte_image(){       return url($this->profile_photo_url); } // USER PICTURE
     public function adminlte_profile_url(){ return url('user/profile'); }
     public function adminlte_desc(){ return $this->roles->pluck('name')->implode(', '); } // RETURN ROLE
+    // User.php
+    public function posts(){return $this->hasMany(Post::class);}
 
 }

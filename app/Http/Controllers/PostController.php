@@ -3,10 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Events\PostEvent;
+use App\Models\Category;
+use App\Models\Image;
 use App\Models\Post;
 use App\Notifications\PostNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
@@ -15,7 +18,9 @@ class PostController extends Controller
      */
     public function index(Request $request)
     {
-        return view('admin.posts.index');
+        $posts = Post::all();
+        $categories = Category::all();
+        return view('admin.posts.index', compact('posts', 'categories'));
     }
 
     /**
@@ -31,15 +36,31 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->all();
-        $data['user_id'] = Auth::id();
-        
-        $post = Post::create($data);
-        // auth()->user()->notify(new PostNotification($post));
-        // User::all()->except($post->user_id)
-        //            ->each(function(User $user) use ($post){
-        //                 $user->notify(new PostNotification($post));
-        //            });
+        // $data = $request->all();
+         $data = $request->validate(['title' => 'required', 'description' => 'required', 'foto' => 'required|image|max:40960', 'category' => 'required']);
+
+        // $data['user_id'] = Auth::id(); $post = Post::create($data); 
+
+        $post = new Post();
+        $post->title = $request->title;
+        $post->body = $request->description;
+        $post->user_id = Auth::user()->id;        
+        $post->slug = Str::slug($request->title);
+        $post->category_id = $request->category;
+
+        $post->save();
+
+        $imagen_id = $post->getKey();                   // El ID del  "Post" después de crearlo 
+
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $nombre = time() . "_" . $file->getClientOriginalName();
+            $ruta = $file->storeAs('uploads', $nombre); // $ruta = $file->store('uploads', 'public');
+            $url = 'storage/' . $ruta;
+
+            Image::create(['url' => $url, 'imageable_id' => $imagen_id, 'imageable_type' => Post::class]); // $post->image()->create(['url' => $url]);
+        } 
+
         event(new PostEvent($post));
         return redirect()->back()->with(['success'=>'Post created successfully']);
     }
@@ -49,7 +70,13 @@ class PostController extends Controller
      */
     public function show(Post $post)
     {
-        //
+        $similares = Post::where('category_id', $post->category_id)
+            ->where('status', 2)
+            ->where('id', '!=', $post->id)
+            ->latest('id')
+            ->take(4)
+            ->get();
+        return view('posts.show', compact('post', 'similares'));
     }
 
     /**
@@ -71,12 +98,25 @@ class PostController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Post $post)
+    public function destroy($id)
     {
-        //
+        $post = Post::find($id);
+
+        if (!$post) {
+            return redirect()->back()->with('error', "Publicación con id $id no encontrada");
+        }
+        
+        if ($post->image) {              // Borrar imagen asociada
+            $path = str_replace('storage/', '', $post->image->url);
+            Storage::disk('public')->delete($path);
+            $post->image->delete();
+        }
+        
+        $post->tags()->detach();          // Opcional: detach tags si quieres limpiar pivot
+
+        $post->delete();
+
+        return redirect()->back()->with('success', 'Publicación eliminada correctamente');
     }
-    public function notification(Post $post)
-    {
-        //
-    }
+ 
 }

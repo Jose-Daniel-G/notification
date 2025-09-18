@@ -315,6 +315,11 @@ return [
             'icon'  => 'fas fa-circle fa-fw ',
         ],
         [
+            'text'  => 'Categorias',
+            'route' => 'admin.categories.index',
+            'icon'  => 'fa-solid fa-layer-group',
+        ],
+        [
             'text' => 'Configuraciones',
             'icon' => 'bi bi-gear',
             'can'  => 'admin.config.index',
@@ -336,7 +341,7 @@ return [
                     'route'         => 'admin.roles.index',
                     'icon' => 'fa-solid fa-address-book',
                     'permissions'  => 'admin.roles.index',
-                ], 
+                ],
             ],
 
         ],
