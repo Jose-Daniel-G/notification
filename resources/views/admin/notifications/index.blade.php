@@ -7,52 +7,56 @@
 @stop
 
 @section('content')
-<div class="card">
-    <div class="card-body table-responsive p-0">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Título</th>
-                    <th>Descripción</th>
-                    <th>Fecha</th>
-                    <th>Estado</th>
-                    <th>Acción</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($notifications as $notification)
-                    <tr @if(is_null($notification->read_at)) class="table-warning" @endif>
-                        <td>{{ $notification->data['title'] ?? 'Sin título' }}</td>
-                        <td>{{ $notification->data['description'] ?? '-' }}</td>
-                        <td>{{ $notification->created_at->diffForHumans() }}</td>
-                        <td>
-                            @if($notification->read_at)
-                                <span class="badge badge-success">Leída</span>
-                            @else
-                                <span class="badge badge-warning">Pendiente</span>
-                            @endif
-                        </td>
-                        <td>
-                            @if(!$notification->read_at)
-                                <form action="{{ route('notifications.read', $notification->id) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="btn btn-sm btn-primary">
-                                        Marcar como leída
-                                    </button>
-                                </form>
-                            @endif
-                        </td>
-                    </tr>
-                @empty
+    <div class="card">
+        <div class="card-body table-responsive p-0">
+            <table class="table table-hover">
+                <thead>
                     <tr>
-                        <td colspan="5" class="text-center">No tienes notificaciones</td>
+                        <th>Título</th>
+                        <th>Descripción</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
                     </tr>
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @forelse($notifications as $notification)
+                        <tr @if (is_null($notification->read_at)) class="table-warning" @endif>
+                            <td>{{ $notification->data['title'] ?? 'Sin título' }}</td>
+                            <td>{{ $notification->data['description'] ?? '-' }}</td>
+                            <td>{{ $notification->created_at->diffForHumans() }}</td>
+                            <td>
+                                @if ($notification->read_at)
+                                    <span class="badge badge-success">Leída</span>
+                                @else
+                                    <span class="badge badge-warning">Pendiente</span>
+                                @endif
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group" >
+                                <a href="{{ route('admin.notifications.read', $notification->id) }}" class="btn btn-warning btn-sm mr-1">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                @if (!$notification->read_at)
+                                    <form action="{{ route('notifications.read', $notification->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="btn btn-sm btn-primary">  <i class="fa-solid fa-square-check"></i>
+                                        </button>
+                                    </form>
+                                @endif
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="text-center">No tienes notificaciones</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer">
+            {{ $notifications->links() }}
+        </div>
     </div>
-    <div class="card-footer">
-        {{ $notifications->links() }}
-    </div>
-</div>
 @stop

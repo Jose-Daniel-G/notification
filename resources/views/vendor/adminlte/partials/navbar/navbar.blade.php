@@ -39,12 +39,23 @@
                 <div class="dropdown-divider"></div>
 
                 @foreach (auth()->user()->unreadNotifications->take(5) as $notification)
-                    <a href="#" class="dropdown-item">
+                    <a href="{{ route('admin.notifications.read', $notification->id) }}" class="dropdown-item">
                         <i class="fas fa-envelope mr-2"></i>
                         {{ $notification->data['title'] ?? 'Nueva notificación' }}
-                        <span class="float-right text-muted text-sm">
-                            {{ $notification->created_at->diffForHumans() }}
-                        </span>
+                        <span class="float-right text-muted text-sm">{{ $notification->created_at->diffForHumans() }}</span>
+                    </a>
+                    <div class="dropdown-divider"></div>
+                @endforeach
+                <span class="dropdown-item dropdown-header">
+                    {{ auth()->user()->readNotifications->count() }} Leidas
+                </span>
+                <div class="dropdown-divider"></div>
+
+                @foreach (auth()->user()->readNotifications->take(5) as $notification)
+                    <a href="{{ route('admin.notifications.read', $notification->id) }}" class="dropdown-item">
+                        <i class="fas fa-envelope mr-2"></i>
+                        {{ $notification->data['title'] ?? 'Nueva notificación' }}
+                        <span class="float-right text-muted text-sm">{{ $notification->created_at->diffForHumans() }}</span>
                     </a>
                     <div class="dropdown-divider"></div>
                 @endforeach

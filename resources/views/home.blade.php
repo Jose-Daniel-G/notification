@@ -4,44 +4,20 @@
 {{-- @section('plugins.Sweetalert2', true) --}}
 @section('css')
     <style>
-        .rating {
-            display: flex;
-            margin-top: -10px;
-            flex-direction: row-reverse;
-            margin-left: -4px;
-            float: left;
-        }
+        .rating {display: flex;margin-top: -10px;flex-direction: row-reverse;margin-left: -4px;float: left;}
 
-        .rating>input {
-            display: none
-        }
+        .rating>input {display: none}
 
-        .rating>label {
-            position: relative;
-            width: 19px;
-            font-size: 25px;
-            color: #ff0000;
-            cursor: pointer;
-        }
+        .rating>label {position: relative;width: 19px;font-size: 25px;color: #ff0000;cursor: pointer;}
 
-        .rating>label::before {
-            content: "\2605";
-            position: absolute;
-            opacity: 0
-        }
+        .rating>label::before {content: "\2605";position: absolute;opacity: 0}
 
         .rating>label:hover:before,
-        .rating>label:hover~label:before {
-            opacity: 1 !important
-        }
+        .rating>label:hover~label:before {opacity: 1 !important}
 
-        .rating>input:checked~label:before {
-            opacity: 1
-        }
+        .rating>input:checked~label:before {opacity: 1}
 
-        .rating:hover>input:checked~label:before {
-            opacity: 0.4
-        }
+        .rating:hover>input:checked~label:before {opacity: 0.4}
     </style>
 @stop
 @section('content_header')
@@ -69,7 +45,7 @@
                         </ul>
                     </div>
                 </div>
-                @include('admin.posts.show') <!-- Modal BUSCAR -->
+                @include('admin.posts.modal-post.show') <!-- Modal BUSCAR -->
             @endforeach
         </div>
     </div>
