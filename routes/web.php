@@ -20,8 +20,8 @@ use Illuminate\Support\Facades\Auth;
  // Route::get('/notifications', [NotificationController::class, 'index'])->name('admin.notifications.index');
 /** NOTIFICATIONS **/
 
-/** POSTS     **/Route::resource('/posts', PostController::class)->names('admin.posts');
-// /** POSTS     **/Route::resource('/posts', PostController::class)->names('admin.posts')->parameters(['posts' => 'post']);
+// /** POSTS     **/Route::resource('/posts', PostController::class)->names('admin.posts');
+/** POSTS     **/Route::resource('/posts', PostController::class)->names('admin.posts')->parameters(['posts' => 'post']);
 /** CATEGORIES**/Route::resource('categories',CategoriesController::class)->names('admin.categories');
 
 Route::middleware(['auth'])->group(function () {

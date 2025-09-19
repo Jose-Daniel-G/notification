@@ -36,16 +36,12 @@ class PostController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-    {
-        // $data = $request->all();
-         $data = $request->validate(['title' => 'required', 'description' => 'required', 'foto' => 'required|image|max:40960', 'category' => 'required']);
-
-        // $data['user_id'] = Auth::id(); $post = Post::create($data); 
+    {  $request->validate(['title' => 'required', 'description' => 'required', 'foto' => 'required|image|max:40960', 'category' => 'required']);
 
         $post = new Post();
         $post->title = $request->title;
         $post->body = $request->description;
-        $post->user_id = Auth::user()->id;        
+        $post->user_id = Auth::user()->id;
         $post->slug = Str::slug($request->title);
         $post->category_id = $request->category;
 
@@ -60,10 +56,10 @@ class PostController extends Controller
             $url = 'storage/' . $ruta;
 
             Image::create(['url' => $url, 'imageable_id' => $imagen_id, 'imageable_type' => Post::class]); // $post->image()->create(['url' => $url]);
-        } 
+        }
 
         event(new PostEvent($post));
-        return redirect()->back()->with(['success'=>'Post created successfully']);
+        return redirect()->back()->with(['success' => 'Post created successfully']);
     }
 
     /**
@@ -85,7 +81,8 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-        //
+        $categories = Category::all();
+        return view('admin.posts.edit', compact('post', 'categories'));
     }
 
     /**
@@ -93,7 +90,20 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //
+        // 1. Validate the request data
+        $request->validate([
+            'title' => 'required|max:255',
+            'body' => 'required',
+            // Add other validation rules for your post fields
+        ]);
+
+        // 2. Fill the Post model with validated data
+        $post->fill($request->all());
+
+        $post->save();
+
+        // 4. Redirect to the index page with a success message
+        return redirect()->route('admin.posts.index')->with('success', 'Publicación actualizada correctamente.');
     }
 
     /**
@@ -106,18 +116,17 @@ class PostController extends Controller
         if (!$post) {
             return redirect()->back()->with('error', "Publicación con id $id no encontrada");
         }
-        
+
         if ($post->image) {              // Borrar imagen asociada
             $path = str_replace('storage/', '', $post->image->url);
             Storage::disk('public')->delete($path);
             $post->image->delete();
         }
-        
+
         $post->tags()->detach();          // Opcional: detach tags si quieres limpiar pivot
 
         $post->delete();
 
         return redirect()->back()->with('success', 'Publicación eliminada correctamente');
     }
- 
 }

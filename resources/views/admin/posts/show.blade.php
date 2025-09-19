@@ -18,9 +18,8 @@
                             <div class="user-block">
                                 {{-- Imagen del autor --}}
                                 <img class="img-circle img-bordered-sm"
-                                    src="{{ asset('storage/' . $post->user->profile_photo_path) ?? asset('dist/img/default-user.png') }}"
+                                    src="{{ $post->user->profile_photo_path ? asset('storage/' . $post->user->profile_photo_path) ??  $post->user->adminlte_image() }}"
                                     alt="{{ $post->user->name }}">
-
 
                                 <span class="username">
                                     <a href="#">{{ $post->user->name }}</a>
